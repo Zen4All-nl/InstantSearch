@@ -5,7 +5,7 @@
  * @copyright Portions Copyright 2003-2006 The Zen Cart Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: searches.php 5 2018-09-01 18:34:47Z davewest $
+ * @version $Id: searches.php 6 2019-08-01 18:34:47Z davewest $
  */
 
 
@@ -56,7 +56,7 @@ if (strlen($wordSearch) > 0) {
 		      WHERE p.products_id = pd.products_id
 			AND p.products_status <> 0
 			AND pd.language_id = :languagesID:
-			AND ((products_name LIKE :wordSearchPlus:) OR (LEFT(pd.products_name,LENGTH(:wordSearch:)) SOUNDS LIKE :wordSearch:))
+			AND ((products_name LIKE :wordSearchPlus:) OR (LEFT(pd.products_name,LENGTH(:wordSearch:)) SOUNDS LIKE :wordSearch:) )
 		     ORDER BY field(LEFT(pd.products_name,LENGTH(:wordSearch:)), :wordSearch:) DESC, pd.products_viewed DESC LIMIT " . $sqlLimit; 
 		     
 						
@@ -145,7 +145,45 @@ if (strlen($wordSearch) > 0) {
 		$dbCategories->MoveNext();
 	  }
 	}
+
+	//similar to categories search but now we search witin manufacturers
+	$sqlManuf = "SELECT p.products_status, p.manufacturers_id, m.manufacturers_name
+		      FROM " . TABLE_PRODUCTS . " p, " . TABLE_MANUFACTURERS . " m 
+		      WHERE p.manufacturers_id = m.manufacturers_id
+			AND p.products_status <> 0
+			AND (manufacturers_name LIKE :wordSearchPlus:) 
+		     ORDER BY field(LEFT(m.manufacturers_name,LENGTH(:wordSearch:)), :wordSearch:) DESC LIMIT " . $sqlLimit;; 
+		     
+						
+	//this protects use from sql injection - i think????		
+	$sqlManuf = $db->bindVars($sqlManuf, ':wordSearch:', $wordSearch, 'string');
+	$sqlManuf = $db->bindVars($sqlManuf, ':wordSearchPlus:', $wordSearchPlus, 'string');
+
+	$dbManuf = $db->Execute($sqlManuf);
 	
+	//this takes each item that was found in the results and places it into 2 separate arrays
+	if ($dbManuf->RecordCount() > 0) {
+	        //this searches for the number of products with same manufacturer ID
+	        $Manuf_count = ($CatCount) ? zen_count_products_for_manufacturer($dbManuf->fields['manufacturers_id']) : "";  
+		$ManufResult = strip_tags($dbManuf->fields['manufacturers_name']);
+		
+		if (strtolower(substr($ManufResult,0,strlen($wordSearch))) == strtolower($wordSearch)){
+			$results[] = array(
+				'q'=>$ManufResult,
+				'c'=>$Manuf_count,
+				'l'=>$dbManuf->fields['manufacturers_id'],
+				'pc'=>"m"
+			);
+		}else{
+			$resultsAddAfter[] = array(
+				'q'=>$ManufResult,
+				'c'=>$Manuf_count,
+				'l'=>$dbManuf->fields['manufacturers_id'],
+				'pc'=>"m"
+			);	
+		}
+		
+	}	
 }
 
 
@@ -175,5 +213,27 @@ unset($value);
 //the results are now passed onto instantSearch.js
 echo json_encode($results);
 
+// Return the number of products for manufacturer
+// TABLES: products, manufacturers
+  function zen_count_products_for_manufacturer($manufacturers_id, $include_inactive = false) {
+    global $db;
+    $products_count = 0;
+    if ($include_inactive == true) {
+      $products_query = "select count(products_id) as total
+                         from " . TABLE_PRODUCTS . " 
+                         where manufacturers_id = '" . (int)$manufacturers_id . "'";
 
+    } else {
+      $products_query = "select count(products_id) as total
+                         from " . TABLE_PRODUCTS . "
+                         where  manufacturers_id = '" . (int)$manufacturers_id . "'
+                         and products_status = '1'";
+
+    }
+    $products = $db->Execute($products_query);
+    $products_count += $products->fields['total'];
+
+
+    return $products_count;
+  }
 ?>

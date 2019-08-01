@@ -4,7 +4,7 @@
  * @copyright Portions Copyright 2003-2006 The Zen Cart Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: jscript_instantSearch.js 5 2018-09-01 18:34:47Z davewest $
+ * @version $Id: jscript_instantSearch.js 6 2019-08-01 18:34:47Z davewest $
  */
 
 
@@ -111,7 +111,7 @@ $(document).ready(function () {
                     var resultHtml = '';
                     $.each(data, function (i, item) {
 						//if any search result are found, a link will be created and placed into the instant search container
-                        resultHtml += '<li><a href="' + generateLink(item.pc,item.l,item.pt) + '"><span class="alignRight">' + formatNumber(item.c) + '</span>' + highlightWord(replaceWord,item.q) + '</a></li>';
+                        resultHtml += '<li><a href="' + generateLink(item.pc,item.l,item.pt,item.q) + '"><span class="alignRight">' + formatNumber(item.c) + '</span>' + highlightWord(replaceWord,item.q) + '</a></li>';
                     });
                       
                        //added for the more link at the bottom uncomment if like it
@@ -163,16 +163,17 @@ function autoPositionContainer(inputBoxCurr, resltsContainer){
 }
 
 //this function creates the link back to the matching products or categories 
-function generateLink(productORcategory, productCategoryID, productInfopage)
+function generateLink(productORcategory, productCategoryID, productInfopage, productKeyword)
 {
 	var l = "";
 	    
 	if (productORcategory == "p"){
 		l = "index.php?main_page=" + productInfopage + "&products_id=" + productCategoryID;
-	}else{
+	}else if (productORcategory == "c"){
 		l = "index.php?main_page=index&cPath=" + productCategoryID;
+	}else {
+	        l = "index.php?main_page=advanced_search_result&keyword=" + productKeyword + "&manufacturers_id=" + productCategoryID;
 	}
-	
 	return l;
 
 }
