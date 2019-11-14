@@ -210,28 +210,3 @@ unset($value);
 
 //the results are now passed onto instantSearch.js
 echo json_encode($results);
-
-// Return the number of products for manufacturer
-// TABLES: products, manufacturers
-function zen_count_products_for_manufacturer($manufacturers_id, $include_inactive = false)
-{
-  global $db;
-  $products_count = 0;
-  if ($include_inactive == true) {
-    $products_query = "select count(products_id) as total
-                       from " . TABLE_PRODUCTS . "
-                       where manufacturers_id = '" . (int)$manufacturers_id . "'";
-  } else {
-    $products_query = "select count(products_id) as total
-                       from " . TABLE_PRODUCTS . "
-                       where  manufacturers_id = '" . (int)$manufacturers_id . "'
-                       and products_status = '1'";
-  }
-  $products = $db->Execute($products_query);
-  $products_count += $products->fields['total'];
-
-
-  return $products_count;
-}
-
-?>
