@@ -21,7 +21,7 @@ function zen_count_products_for_manufacturer($manufacturers_id, $include_inactiv
   global $db;
   $products_count = 0;
     $products_query = "SELECT COUNT(products_id) AS total
-                       FORM " . TABLE_PRODUCTS . "
+                       FROM " . TABLE_PRODUCTS . "
                        WHERE manufacturers_id = " . (int)$manufacturers_id ."
                        " . ($include_inactive == true ? ' AND products_status = 1': '');
 

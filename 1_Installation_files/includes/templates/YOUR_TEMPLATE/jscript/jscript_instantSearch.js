@@ -104,12 +104,16 @@ $(document).ready(function () {
 
       //we then pass on the search word to searches.php
       //searches.php will then look for all the search results 
-      request = $.getJSON('searches.php', {query: searchWord}, function (data) {
 
-
-        if (data.length > 0) {
+      zcJS.ajax({
+        url: 'ajax.php?act=ajaxInstantSearch&method=getSearchResults',
+        data: {
+          'query' : searchWord
+        }
+      }).done(function (data) {
+        if (data.results.length > 0) {
           var resultHtml = '';
-          $.each(data, function (i, item) {
+          $.each(data.results, function (i, item) {
             //if any search result are found, a link will be created and placed into the instant search container
             resultHtml += '<li><a href="' + generateLink(item.pc, item.l, item.pt, item.q) + '"><span class="alignRight">' + formatNumber(item.c) + '</span>' + highlightWord(replaceWord, item.q) + '</a></li>';
           });
@@ -135,7 +139,6 @@ $(document).ready(function () {
           resultsContainer.hide();
 
         }
-
         runningRequest = false;
       });
     }
@@ -163,8 +166,7 @@ function autoPositionContainer(inputBoxCurr, resltsContainer) {
 }
 
 //this function creates the link back to the matching products or categories 
-function generateLink(productORcategory, productCategoryID, productInfopage, productKeyword)
-{
+function generateLink(productORcategory, productCategoryID, productInfopage, productKeyword) {
   var l = "";
 
   if (productORcategory == "p") {
@@ -179,8 +181,7 @@ function generateLink(productORcategory, productCategoryID, productInfopage, pro
 }
 
 
-function highlightWord(findTxt, replaceTxt)
-{
+function highlightWord(findTxt, replaceTxt) {
   var f = findTxt.toLowerCase();
   var r = replaceTxt.toLowerCase();
   var regex = new RegExp('(' + f + ')', 'i');
@@ -188,8 +189,7 @@ function highlightWord(findTxt, replaceTxt)
 
 }
 
-function formatNumber(num)
-{
+function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 
 }
