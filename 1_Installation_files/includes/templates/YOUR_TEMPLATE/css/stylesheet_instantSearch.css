@@ -2,7 +2,7 @@
 edit the position of the search box by uncommenting and changing the left and top values bellow.
 Also make sure you set autoPosition = false in jscript_instantSearch.js*/
 
-.resultsContainer {
+#resultsContainer {
   display: none;
   position: absolute;
   /*left:100px;*/
@@ -25,19 +25,19 @@ Also make sure you set autoPosition = false in jscript_instantSearch.js*/
   box-shadow: 0px 2px 8px #000000;
 }
 
-.resultsContainer ul {
+#resultsContainer ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
-  width: 100%;
+  width: 100% !important;
 }
 
-.resultsContainer li {
+#resultsContainer li {
   margin: 0;
   padding: 0;
 }
 
-.resultsContainer a {
+#resultsContainer a {
   display: block;
   color: #000;
   background-color: #fff;
@@ -48,7 +48,7 @@ Also make sure you set autoPosition = false in jscript_instantSearch.js*/
 
 }
 
-.resultsContainer a:hover {
+#resultsContainer a:hover {
   background-color: #eee;
   color: #000000;
 }
@@ -69,13 +69,13 @@ Also make sure you set autoPosition = false in jscript_instantSearch.js*/
 /* added for more and header search box */
 
 .searchMore {
-  font-weight : bold;
+  font-weight: bold;
   /*font-size : 70%; */
-  color:#3071a9;
+  color: #3071a9;
 }
 
-#navMainSearch .resultsContainer a {
-  color : #000;
-  background-color : #fff;
-  text-decoration : none;
+#navMainSearch #resultsContainer a {
+  color: #000;
+  background-color: #fff;
+  text-decoration: none;
 }

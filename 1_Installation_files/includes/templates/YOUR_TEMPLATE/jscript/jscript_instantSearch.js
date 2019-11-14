@@ -38,7 +38,7 @@ $(document).ready(function () {
 
 
   //this adds a instant search container bellow the search box
-  inputBox.before('<div class="resultsContainer"></div>');
+  inputBox.before('<div id="resultsContainer"></div>');
   inputBox.attr('autocomplete', 'off');
 
   //re-position all the instant search container correctly into their places
