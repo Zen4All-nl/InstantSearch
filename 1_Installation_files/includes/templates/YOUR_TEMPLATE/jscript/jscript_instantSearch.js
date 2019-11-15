@@ -12,22 +12,22 @@
 
 
 //these var's will be used to maintain multiple request
-var runningRequest = false;
+let runningRequest = false;
 var request;
 
 //if you want to manually position the result box you can set autoPosition to false
 //but make sure to provide the top and left value in instantSearch.css
-var autoPosition = true;
+const autoPosition = true;
 
 
-var inputboxCurrent;
+let inputboxCurrent;
 
 //checks to see if the document has loaded and is ready
 $(document).ready(function () {
 
 
   //this will apply the instant search feature to all the search boxes
-  var inputBox = $('input[name="keyword"]');
+  const inputBox = $('input[name="keyword"]');
 
   //if you want to add instant search to only a specific box then comment out the var inputBox above
   //and uncomment out the specific search box selector bellow:
@@ -44,7 +44,7 @@ $(document).ready(function () {
   //re-position all the instant search container correctly into their places
   if (autoPosition == true) {
     inputBox.each(function (index) {
-      var offset = $(this).offset();
+      const offset = $(this).offset();
       $(this).prev().css("left", offset.left + "px");
       $(this).prev().css("top", ($(this).outerHeight(true) + offset.top) + "px");
     });
@@ -54,7 +54,7 @@ $(document).ready(function () {
   //if the search box losses focus, then the instant search container will be hidden
   inputBox.blur(function () {
     if (inputboxCurrent) {
-      var resultsContainer = inputboxCurrent.prev();
+      const resultsContainer = inputboxCurrent.prev();
       resultsContainer.delay(300).slideUp(200);
     }
   });
@@ -63,7 +63,7 @@ $(document).ready(function () {
   //if we resize the browser or zoom in or out of a page then the instant search container will be hidden
   $(window).resize(function () {
     if (inputboxCurrent) {
-      var resultsContainer = inputboxCurrent.prev();
+      const resultsContainer = inputboxCurrent.prev();
       resultsContainer.hide();
     }
   });
@@ -76,11 +76,11 @@ $(document).ready(function () {
     inputboxCurrent = $(this);
 
     //assign a variable to the instant search container
-    var resultsContainer = $(this).prev();
+    const resultsContainer = $(this).prev();
 
     //we capture the words that are being typed into the search box
-    var searchWord = $(this).val();
-    var replaceWord = searchWord;
+    let searchWord = $(this).val();
+    const replaceWord = searchWord;
 
     //we clean up the word for any unnecessary characters or double spaces
     searchWord = searchWord.replace(/^\s+/, "");
@@ -108,11 +108,11 @@ $(document).ready(function () {
       zcJS.ajax({
         url: 'ajax.php?act=ajaxInstantSearch&method=getSearchResults',
         data: {
-          'query' : searchWord
+          'query': searchWord
         }
       }).done(function (data) {
         if (data.results.length > 0) {
-          var resultHtml = '';
+          let resultHtml = '';
           $.each(data.results, function (i, item) {
             //if any search result are found, a link will be created and placed into the instant search container
             resultHtml += '<li><a href="' + generateLink(item.pc, item.l, item.pt, item.q) + '"><span class="alignRight">' + formatNumber(item.c) + '</span>' + highlightWord(replaceWord, item.q) + '</a></li>';
@@ -147,12 +147,12 @@ $(document).ready(function () {
 
 //this function auto positions the container
 function autoPositionContainer(inputBoxCurr, resltsContainer) {
-  var offsetInput = inputBoxCurr.offset();
-  var overFlow = offsetInput.left + resltsContainer.outerWidth(true);
-  var winWidth = $(document).width();
+  const offsetInput = inputBoxCurr.offset();
+  const overFlow = offsetInput.left + resltsContainer.outerWidth(true);
+  const winWidth = $(document).width();
 
   if (overFlow > winWidth) { // this checks to see if the container overflows on the right of the window
-    var dif = overFlow - winWidth;
+    const dif = overFlow - winWidth;
 
     if ((offsetInput.left - dif) < 0) {// this checks to see if the container overflows on the left of the window
       resltsContainer.css("left", 0 + "px");
@@ -167,11 +167,11 @@ function autoPositionContainer(inputBoxCurr, resltsContainer) {
 
 //this function creates the link back to the matching products or categories 
 function generateLink(productORcategory, productCategoryID, productInfopage, productKeyword) {
-  var l = "";
+  let l = "";
 
-  if (productORcategory == "p") {
+  if (productORcategory === "p") {
     l = "index.php?main_page=" + productInfopage + "&products_id=" + productCategoryID;
-  } else if (productORcategory == "c") {
+  } else if (productORcategory === "c") {
     l = "index.php?main_page=index&cPath=" + productCategoryID;
   } else {
     l = "index.php?main_page=advanced_search_result&keyword=" + productKeyword + "&manufacturers_id=" + productCategoryID;
@@ -182,10 +182,10 @@ function generateLink(productORcategory, productCategoryID, productInfopage, pro
 
 
 function highlightWord(findTxt, replaceTxt) {
-  var f = findTxt.toLowerCase();
-  var r = replaceTxt.toLowerCase();
-  var regex = new RegExp('(' + f + ')', 'i');
-  return r.replace(regex, '<span class="thinFont">' + f + '</span>')
+  const f = findTxt.toLowerCase();
+  const r = replaceTxt.toLowerCase();
+  const regex = new RegExp('(' + f + ')', 'i');
+  return r.replace(regex, '<span class="thinFont">' + f + '</span>');
 
 }
 
