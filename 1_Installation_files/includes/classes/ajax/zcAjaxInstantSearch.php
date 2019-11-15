@@ -170,19 +170,11 @@ class zcAjaxInstantSearch extends base {
 //we now re-sort the results so that $results has first priority over $resultsAddAfter
 //if pt is null we need to not sort it or it will kill the link.
     foreach ($resultsAddAfter as &$value) {
-      if ($value["pt"] == '') {
-        $results[] = array(
-          'q' => $value["q"],
-          'c' => $value["c"],
-          'uri' => $value["uri"]
-        );
-      } else {
-        $results[] = array(
-          'q' => $value["q"],
-          'c' => $value["c"],
-          'uri' => $value["uri"]
-        );
-      }
+      $results[] = array(
+        'q' => $value["q"],
+        'c' => $value["c"],
+        'uri' => $value["uri"]
+      );
     }
 
     unset($value);
