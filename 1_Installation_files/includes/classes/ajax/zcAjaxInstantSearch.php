@@ -66,31 +66,32 @@ class zcAjaxInstantSearch extends base {
 
           $prodResult = strip_tags($dbProduct['products_name']);
           $prodInfo = zen_get_info_page($dbProduct['products_id']);
-if($prodResult !=''){
-          if (strtolower(substr($prodResult, 0, strlen($wordSearch))) == strtolower($wordSearch)) {
-            $results[] = array(
-              //we have 5 seperate variables that will be passed on to instantSearch.js
-              //'q' is the result thats been found
-              //'c' is the number of item within a category search (we leave this empty for product search, look at the example bellow for category search)
-              //'l' is used for creating a link to the product or category
-              //'pt' is used to get the product info page by product type using type_handler + '_info'
-              //'pc' lets us know if the word found is a product or a category
-              'q' => $prodResult,
-              'c' => $prodquantity,
-              'l' => $dbProduct['products_id'],
-              'pt' => $prodInfo,
-              'pc' => "p"
-            );
-          } else {
-            $resultsAddAfter[] = array(
-              'q' => $prodResult,
-              'c' => $prodquantity,
-              'l' => $dbProduct['products_id'],
-              'pt' => $prodInfo,
-              'pc' => "p"
-            );
+          if ($prodResult != '') {
+            if (strtolower(substr($prodResult, 0, strlen($wordSearch))) == strtolower($wordSearch)) {
+              $results[] = array(
+                //we have 5 seperate variables that will be passed on to instantSearch.js
+                //'q' is the result thats been found
+                //'c' is the number of item within a category search (we leave this empty for product search, look at the example bellow for category search)
+                //'l' is used for creating a link to the product or category
+                //'pt' is used to get the product info page by product type using type_handler + '_info'
+                //'pc' lets us know if the word found is a product or a category
+                'q' => $prodResult,
+                'c' => $prodquantity,
+                'l' => $dbProduct['products_id'],
+                'pt' => $prodInfo,
+                'pc' => "p"
+              );
+            } else {
+              $resultsAddAfter[] = array(
+                'q' => $prodResult,
+                'c' => $prodquantity,
+                'l' => $dbProduct['products_id'],
+                'pt' => $prodInfo,
+                'pc' => "p"
+              );
+            }
           }
-        }}
+        }
       }
 
       //similar to product search but now we search witin categories
@@ -114,23 +115,24 @@ if($prodResult !=''){
           //this searches for the number of products within a category
           $products_count = ($CatCount) ? zen_count_products_in_category($dbCategory['categories_id']) : '';
           $prodResult = strip_tags($dbCategory['categories_name']);
-          if($prodResult !=''){
-          if (strtolower(substr($prodResult, 0, strlen($wordSearch))) == strtolower($wordSearch)) {
-            $results[] = array(
-              'q' => $prodResult,
-              'c' => $products_count,
-              'l' => $dbCategory['categories_id'],
-              'pc' => 'c'
-            );
-          } else {
-            $resultsAddAfter[] = array(
-              'q' => $prodResult,
-              'c' => $products_count,
-              'l' => $dbCategory['categories_id'],
-              'pc' => 'c'
-            );
+          if ($prodResult != '') {
+            if (strtolower(substr($prodResult, 0, strlen($wordSearch))) == strtolower($wordSearch)) {
+              $results[] = array(
+                'q' => $prodResult,
+                'c' => $products_count,
+                'l' => $dbCategory['categories_id'],
+                'pc' => 'c'
+              );
+            } else {
+              $resultsAddAfter[] = array(
+                'q' => $prodResult,
+                'c' => $products_count,
+                'l' => $dbCategory['categories_id'],
+                'pc' => 'c'
+              );
+            }
           }
-        }}
+        }
       }
 
       //similar to categories search but now we search witin manufacturers
@@ -155,23 +157,24 @@ if($prodResult !=''){
         //this searches for the number of products with same manufacturer ID
         $Manuf_count = ($CatCount) ? zen_count_products_for_manufacturer($dbManuf->fields['manufacturers_id']) : "";
         $ManufResult = strip_tags($dbManuf->fields['manufacturers_name']);
-if($ManufResult !=''){
-        if (strtolower(substr($ManufResult, 0, strlen($wordSearch))) == strtolower($wordSearch)) {
-          $results[] = array(
-            'q' => $ManufResult,
-            'c' => $Manuf_count,
-            'l' => $dbManuf->fields['manufacturers_id'],
-            'pc' => 'm'
-          );
-        } else {
-          $resultsAddAfter[] = array(
-            'q' => $ManufResult,
-            'c' => $Manuf_count,
-            'l' => $dbManuf->fields['manufacturers_id'],
-            'pc' => 'm'
-          );
+        if ($ManufResult != '') {
+          if (strtolower(substr($ManufResult, 0, strlen($wordSearch))) == strtolower($wordSearch)) {
+            $results[] = array(
+              'q' => $ManufResult,
+              'c' => $Manuf_count,
+              'l' => $dbManuf->fields['manufacturers_id'],
+              'pc' => 'm'
+            );
+          } else {
+            $resultsAddAfter[] = array(
+              'q' => $ManufResult,
+              'c' => $Manuf_count,
+              'l' => $dbManuf->fields['manufacturers_id'],
+              'pc' => 'm'
+            );
+          }
         }
-      }}
+      }
     }
 
 
