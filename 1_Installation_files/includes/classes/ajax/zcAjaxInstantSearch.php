@@ -7,7 +7,6 @@
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  */
-
 class zcAjaxInstantSearch extends base {
 
   public function getSearchResults()
@@ -41,7 +40,7 @@ class zcAjaxInstantSearch extends base {
 
       //first we would like to search for products that match our search word
       //we then order the search results with respect to the keyword found at the begining of each of the results
-      $sqlProduct = "SELECT p.products_id, p.products_status, p.products_quantity,
+      $sqlProduct = "SELECT p.products_id, p.products_status, p.products_quantity, p.master_categories_id,
                             pd.products_name
                      FROM " . TABLE_PRODUCTS . " p
                      LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON pd.products_id = p.products_id
@@ -69,25 +68,19 @@ class zcAjaxInstantSearch extends base {
           if ($prodResult != '') {
             if (strtolower(substr($prodResult, 0, strlen($wordSearch))) == strtolower($wordSearch)) {
               $results[] = array(
-                //we have 5 seperate variables that will be passed on to instantSearch.js
-                //'q' is the result thats been found
-                //'c' is the number of item within a category search (we leave this empty for product search, look at the example bellow for category search)
-                //'l' is used for creating a link to the product or category
-                //'pt' is used to get the product info page by product type using type_handler + '_info'
-                //'pc' lets us know if the word found is a product or a category
+                /*
+                 * 'q' is the result thats been found
+                 * 'c' is the number of item within a category search (we leave this empty for product search, look at the example bellow for category search)
+                 */
                 'q' => $prodResult,
                 'c' => $prodquantity,
-                'l' => $dbProduct['products_id'],
-                'pt' => $prodInfo,
-                'pc' => "p"
+                'uri' => zen_href_link(zen_get_info_page($dbProduct['products_id']), 'cPath=' . zen_get_generated_category_path_rev($dbProduct['master_categories_id']) . '&products_id=' . $dbProduct['products_id'])
               );
             } else {
               $resultsAddAfter[] = array(
                 'q' => $prodResult,
                 'c' => $prodquantity,
-                'l' => $dbProduct['products_id'],
-                'pt' => $prodInfo,
-                'pc' => "p"
+                'uri' => zen_href_link(zen_get_info_page($dbProduct['products_id']), 'cPath=' . zen_get_generated_category_path_rev($dbProduct['master_categories_id']) . '&products_id=' . $dbProduct['products_id'])
               );
             }
           }
@@ -120,15 +113,13 @@ class zcAjaxInstantSearch extends base {
               $results[] = array(
                 'q' => $prodResult,
                 'c' => $products_count,
-                'l' => $dbCategory['categories_id'],
-                'pc' => 'c'
+                'uri' => zen_href_link(FILENAME_DEFAULT, 'cPath=' . $dbCategory['categories_id'])
               );
             } else {
               $resultsAddAfter[] = array(
                 'q' => $prodResult,
                 'c' => $products_count,
-                'l' => $dbCategory['categories_id'],
-                'pc' => 'c'
+                'uri' => zen_href_link(FILENAME_DEFAULT, 'cPath=' . $dbCategory['categories_id'])
               );
             }
           }
@@ -162,15 +153,13 @@ class zcAjaxInstantSearch extends base {
             $results[] = array(
               'q' => $ManufResult,
               'c' => $Manuf_count,
-              'l' => $dbManuf->fields['manufacturers_id'],
-              'pc' => 'm'
+              'uri' => zen_href_link(FILENAME_ADVANCED_SEARCH_RESULT, 'keyword=' . $ManufResult . '&manufacturers_id=' . $dbManuf->fields['manufacturers_id'])
             );
           } else {
             $resultsAddAfter[] = array(
               'q' => $ManufResult,
               'c' => $Manuf_count,
-              'l' => $dbManuf->fields['manufacturers_id'],
-              'pc' => 'm'
+              'uri' => zen_href_link(FILENAME_ADVANCED_SEARCH_RESULT, 'keyword=' . $ManufResult . '&manufacturers_id=' . $dbManuf->fields['manufacturers_id'])
             );
           }
         }
@@ -185,16 +174,13 @@ class zcAjaxInstantSearch extends base {
         $results[] = array(
           'q' => $value["q"],
           'c' => $value["c"],
-          'l' => $value["l"],
-          'pc' => $value["pc"]
+          'uri' => $value["uri"]
         );
       } else {
         $results[] = array(
           'q' => $value["q"],
           'c' => $value["c"],
-          'l' => $value["l"],
-          'pt' => $value["pt"],
-          'pc' => $value["pc"]
+          'uri' => $value["uri"]
         );
       }
     }
