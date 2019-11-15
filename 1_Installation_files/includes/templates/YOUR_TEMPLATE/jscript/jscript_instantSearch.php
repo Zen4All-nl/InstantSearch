@@ -110,9 +110,9 @@
             'query': searchWord
           }
         }).done(function (data) {
-          if (data.results.length > 0) {
+          if (data.length > 0) {
             let resultHtml = '';
-            $.each(data.results, function (i, item) {
+            $.each(data, function (i, item) {
               //if any search result are found, a link will be created and placed into the instant search container
               resultHtml += '<li><a href="' + item.uri + '"><span class="alignRight">' + formatNumber(item.c) + '</span>' + highlightWord(replaceWord, item.q) + '</a></li>';
             });

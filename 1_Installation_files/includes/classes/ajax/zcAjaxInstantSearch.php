@@ -188,9 +188,7 @@ class zcAjaxInstantSearch extends base {
     unset($value);
 
 //the results are now passed onto instantSearch.js
-    return([
-      'results' => $results
-    ]);
+    return $results;
   }
 
 }
