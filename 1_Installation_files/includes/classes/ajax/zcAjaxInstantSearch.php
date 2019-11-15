@@ -7,9 +7,6 @@
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  */
-define('INSTANT_SEARCH_PRODUCT_COUNT', false);
-define('INSTANT_SEARCH_CATEGORY_COUNT', true);
-define('INSTANT_SEARCH_RESULT_LIMIT', 4); //change LIMIT to your max display idea.. too long and its useless
 
 class zcAjaxInstantSearch extends base {
 
@@ -29,9 +26,9 @@ class zcAjaxInstantSearch extends base {
     $prodResult = '';
 
 //On-TRUE Off-FALSE switches for items within the search box
-    $ProdCount = INSTANT_SEARCH_PRODUCT_COUNT;
-    $CatCount = INSTANT_SEARCH_CATEGORY_COUNT;
-    $sqlLimit = INSTANT_SEARCH_RESULT_LIMIT;
+    $ProdCount = (INSTANT_SEARCH_PRODUCT_COUNT == 0 ? false : true);
+    $CatCount = (INSTANT_SEARCH_CATEGORY_COUNT == 0 ? false : true);
+    $sqlLimit = (int)INSTANT_SEARCH_RESULT_LIMIT;
     if (strlen($wordSearch) > 0) {
 
       //if the user enters less than 2 characters we would like match search results that beging with these characters
