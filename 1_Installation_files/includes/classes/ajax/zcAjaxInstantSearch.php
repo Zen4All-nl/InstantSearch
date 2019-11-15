@@ -61,7 +61,7 @@ class zcAjaxInstantSearch extends base {
 
       //this takes each item that was found in the results and places it into 2 separate arrays
       if ($dbProducts->RecordCount() > 0) {
-        foreach ($dbProducts as $dbproduct) {
+        foreach ($dbProducts as $dbProduct) {
           $prodquantity = ($ProdCount) ? $dbProduct['products_quantity'] : '';
 
           $prodResult = strip_tags($dbProduct['products_name']);
